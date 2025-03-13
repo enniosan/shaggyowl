@@ -11,3 +11,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |	https://codeigniter.com/userguide3/general/hooks.html
 |
 */
+
+
+#   creo un hook adatto per la verifica del login
+
+$hook['post_controller_constructor'][] = array(
+    'class'    => 'AuthHook',
+    'function' => 'check_login',
+    'filename' => 'AuthHook.php',
+    'filepath' => 'hooks'
+);

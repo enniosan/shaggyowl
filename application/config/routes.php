@@ -49,6 +49,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
-$route['default_controller'] = 'welcome';
+$route['default_controller'] = 'main';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+
+
+# Rotte per la pagina di login
+
+$route['']     = 'main/index';
+$route['login/auth']   = 'main/authLogin';
+
+/*
+$route['logout']    = 'main/logout';
+
+# Rotte per gestire il CRUD degli utenti
+
+$route['app']               = 'app/index'; // Visualizza tutti gli utenti
+$route['app/create']        = 'app/create'; // Crea un nuovo utente
+$route['app/store']         = 'app/store'; // Salva un nuovo utente
+$route['app/edit/(:id)']    = 'app/edit/$1'; // Modifica un utente esistente
+$route['app/update/(:id)']  = 'app/update/$1'; // Aggiorna un utente esistente
+$route['app/delete/(:nid)'] = 'app/delete/$1'; // Cancella un utente esistente
+
+*/

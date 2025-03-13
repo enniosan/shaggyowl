@@ -54,22 +54,15 @@
  * NOTE: If you change these, also change the error_reporting() code below
  */
 
- #	enniosan :
- #		- error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
+ /*	enniosan
+	customizzazioni
 
- 
- error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
+	creazione di classes e functions per avere delle funzioni gneeriche da richiamare in giro per il codice
+	impostazione dell'error reporting per evitare che ci siano confillti con php8
 
- function dd( ...$args ){
-	 echo '<pre>';
+*/
 
-	 foreach( $args as $arg ){
-		 var_dump( $arg );
-	 }
-
-	 echo '</pre>';
-	 die();
- }
+require_once( "functions/generic.php" );
 
 
 define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
@@ -100,6 +93,8 @@ switch (ENVIRONMENT)
 		echo 'The application environment is not set correctly.';
 		exit(1); // EXIT_ERROR
 }
+ 
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
 
 /*
  *---------------------------------------------------------------
