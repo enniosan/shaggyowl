@@ -28,38 +28,67 @@ class Main extends CI_Controller {
 	public function index()
 	{
 		$this->load->view('login');
-	
 	}
+
+
+	/**
+	 * Funzione per l'autenticazione dell'utente
+	 *
+	 * @return void
+	 */
+
 
 	public function authLogin( ){
 
-		#	connessione al db
-		
-		$this->load->model('Admins_model'); // Ensure that the file application/models/Admins_model.php exists and the class is defined as Admins_model
-		
-		$this->load->library('auth_library');
-		
-		#	verifica dei dati
+		if ($this->input->server('REQUEST_METHOD') !== 'POST') {
+            show_error('ES:: Invalid request method', 405);
+        }
 
+		#	out
+		
+
+		$out = [
+			"success" 	=> false,
+			"message" 	=> "Operazione non conclusa",
+			"location" 	=> false,
+			"w" 		=> false,
+		];
+
+
+		#	leggo i dati in arrivo
+		$body = json_decode( file_get_contents("php://input"), 1 );
+
+		#	gestione della validazione
+
+		$this->form_validation->set_data($body);
 		$this->form_validation->set_rules('username', 'Username', 'required|alpha_numeric');
-		$this->form_validation->set_rules('password', 'Password', 'required|min_length[4]');
-	
-		#	se i dati non sono corretti
+		$this->form_validation->set_rules('password', 'Password', 'required');
 
-		if ($this->form_validation->run() == false) {
+		#	imposto qui i dati dell'eventuale errore per due motivi
+		#	il primo è che mi segnala se le operazioni sono andate avanti e non si è bloccato il codice prima
+		#	la seconda è per evitare l'else e lasciare solo la condizione pulita
+		#	tanto non devo segnalare all'utente informazioni che possano compromettere la sicurezza della login
 
-			$this->load->view('login');
+		
 
-		} else {
+		#	se i dati sono corretti...
 
+		if ( $this->form_validation->run() ) {
+			
+			#	modelli e librerie
+			
+			$this->load->model('Admins_model'); 
+			$this->load->library('auth_library');
+			
+			
 			#	se i dati sono corretti
-
-			$username = $this->input->post('username');
-			$password = $this->input->post('password');
+			$username = $body['username'];
+            $password = $body['password'];
 
 			#	verifica se l'utente esiste
 
 			$admin = $this->Admins_model->getAdminUser($username, $password);
+
 
 			if ($admin !== false) {
 
@@ -71,17 +100,27 @@ class Main extends CI_Controller {
 				$this->session->set_userdata('email', 		$admin->email	);
 				$this->session->set_userdata('id', 			$admin->id		);
 
-				redirect('/app/main');
+				$out['success'] = true;
+				$out['message'] = "Credenziali corrette";
+				$out['location'] = "/app";
 				
-			} 
+				
+				
+			}else{
+				
+				$out['w'] 		= __LINE__;
+			}
 			
+		}else{
 			
-			
-			#	se l'utente non esiste
+			$out['w'] 		= __LINE__;
 
-			$this->session->set_flashdata('error', 'Credenziali non corrette');
-			
-			redirect( '/' );
 		}
+
+		$out['message'] = "Credenziali non corrette";
+
+		header('Content-Type: application/json');
+		echo json_encode($out);
+		die;
 	}
 }

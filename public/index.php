@@ -59,10 +59,11 @@
 
 	creazione di classes e functions per avere delle funzioni gneeriche da richiamare in giro per il codice
 	impostazione dell'error reporting per evitare che ci siano confillti con php8
-
 */
 
-require_once( "functions/generic.php" );
+
+
+require_once( "../functions/generic.php" );
 
 
 define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
@@ -94,6 +95,9 @@ switch (ENVIRONMENT)
 		exit(1); // EXIT_ERROR
 }
  
+
+#	enniosan
+#	tolgo i deprecati perchè sto su una versione di php non compatibile
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
 
 /*
@@ -104,7 +108,7 @@ error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
  * This variable must contain the name of your "system" directory.
  * Set the path if it is not in the same directory as this file.
  */
-	$system_path = 'system';
+	$system_path = '../system';
 
 /*
  *---------------------------------------------------------------
@@ -121,7 +125,7 @@ error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
  *
  * NO TRAILING SLASH!
  */
-	$application_folder = 'application';
+	$application_folder = '../application';
 
 /*
  *---------------------------------------------------------------

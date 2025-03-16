@@ -7,6 +7,7 @@ class Auth_library {
     protected $CI;
 
     public function __construct() {
+        
         $this->CI =& get_instance();
         $this->CI->load->library('session');
         $this->CI->load->helper('url');
@@ -14,6 +15,8 @@ class Auth_library {
 
     public function check_login() {
         if (!$this->CI->session->userdata('logged_in')) {
+            
+            dd("ECCACHIO");
             redirect('login');
         }
     }

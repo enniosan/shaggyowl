@@ -49,6 +49,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
+
+//  fallback
 $route['default_controller'] = 'main';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
@@ -57,15 +59,20 @@ $route['translate_uri_dashes'] = FALSE;
 
 # Rotte per la pagina di login
 
-$route['']     = 'main/index';
-$route['login/auth']   = 'main/authLogin';
+$route['']              = 'main/index';
+$route['login/auth']    = 'main/authLogin';
+$route['logout']        = 'main/logout';
+
+
+#   rotta app principale
+$route['app']           = 'app/index'; // Visualizza tutti gli utenti
+
+
 
 /*
-$route['logout']    = 'main/logout';
 
-# Rotte per gestire il CRUD degli utenti
+# Rotte per gestire l'app / CRUD
 
-$route['app']               = 'app/index'; // Visualizza tutti gli utenti
 $route['app/create']        = 'app/create'; // Crea un nuovo utente
 $route['app/store']         = 'app/store'; // Salva un nuovo utente
 $route['app/edit/(:id)']    = 'app/edit/$1'; // Modifica un utente esistente
