@@ -13,11 +13,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 
 
-#   creo un hook adatto per la verifica del login
-
-$hook['post_controller_constructor'][] = array(
+$hook['post_controller_constructor'] = array(
     'class'    => 'AuthHook',
     'function' => 'check_login',
     'filename' => 'AuthHook.php',
     'filepath' => 'hooks'
 );
+

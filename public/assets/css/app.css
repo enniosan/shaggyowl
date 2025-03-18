@@ -1,0 +1,240 @@
+/*  contenitore dell'applicazione  */
+
+#appContainer{
+  height: 100vh;
+  display:grid;
+  grid-template-rows: 50px auto 50px;
+  overflow: auto;
+
+}
+
+
+/*  header  */
+
+#header{
+  display: grid;
+  grid-template-columns: 30px auto auto 1fr;
+
+  gap: 10px;
+  place-items: start center;
+
+  line-height: 16px;
+  font-size: 14px;
+
+  padding: 5px 5px;
+  height: 50px;
+  
+}
+
+
+
+#header img{
+  width: 30px;
+  height: 30px;
+}
+
+#header .username{
+  font-size: 1.2rem;
+}
+
+#header .username small{
+  font-size: .6rem;
+  line-height: .6rem;
+  color: var(--secondary-color);
+}
+
+#header .filler{
+  text-align:right;
+  width: 100%;
+}
+
+#logout{
+  cursor: pointer;
+}
+
+.stop{
+  overflow: hidden;
+}
+
+
+/*  modal / editMask */
+#modalContainer{
+  width: 100%;
+  height:100vh;
+  display: grid;
+  grid-template-columns: 1fr;
+  place-items: center center;
+  background-color: rgba(0,0,0,0.5);
+  position: fixed; 
+  top: 0;
+  left: 0;
+  z-index: 100;
+
+  transition: 0.5s all;
+}
+
+#editMask{
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  display: grid;
+  grid-template-rows: 30px 1fr 30px;
+
+}
+
+
+/*  main table / data container */
+
+#theTable{
+  width: 100%;
+  margin:auto;
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: repeat( 7, auto );
+  /**/gap: 1px;
+  overflow-y: auto;
+  margin-top: 0px;
+  
+  height: calc( 100vh - 100px );
+
+}
+
+.sorter{
+  cursor: pointer;
+  user-select: none
+}
+
+.headField{
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  padding: 10px;
+  background-color: var( --head-color );
+  color: var( --light-color );
+  gap: 5px;
+
+  border-top: 1px solid var( --dark-color );
+  position:sticky;
+  top:0px;
+  z-index: 100;
+}
+
+
+.commonField{
+  padding: 10px;
+  transition: 0.5s background-color;  
+  height: 40px;
+
+}
+
+.commonField:hover{
+  background: var( --secondary-color );
+  color: #FFF;
+}
+
+
+
+.sorter{
+  text-align:right;
+}
+
+.actions{
+  text-align: right;
+  display: grid;
+  grid-auto-flow: column;
+  gap:10px;
+  place-items: center center
+}
+
+.action-icon{
+  cursor:pointer;
+  transition: 0.5s all;
+  width: 20px;
+  height: 20px;
+  border: 0px none;
+  background-color: transparent;
+  
+}
+
+
+.backgroundRow{
+  background-color: #6662;
+}
+
+
+#navibar{
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 15px;
+
+  gap: 10px;
+
+  color: #FFF;
+  font-weight: 500;
+
+  background-color: var(--secondary-color);
+  user-select: none;
+}
+
+#navibar a, #navibar a:visited{
+  text-decoration: underline;
+  color:#CCC;
+}
+
+#navibar a:hover{
+  color:#FFF;
+}
+
+
+
+
+
+@media(max-width: 600px){
+
+  #appContainer{
+    height: 100vh;
+    display:grid;
+    grid-template-rows: auto auto auto;
+  }
+
+  #header{
+    grid-template-columns: 30px auto 30px;
+    padding: 5px;
+
+    background-color: var(--secondary-color);
+    color: #FFF;
+
+    height: 50px;
+  }
+
+  #header .username{
+    display: none;
+  }
+
+  #header .title{
+    width: calc( 100% - 80px );
+    place-self: center center;
+    font-weight: 700;
+    font-size: 1.2rem; 
+    line-height: 1.2rem;
+  }
+
+  #header .filler{
+    width: 40px;
+    place-content: center center;
+    font-weight: 700;
+    font-size: 1.2rem;  
+  }
+  
+
+  .hiddenXs{
+    display:none;
+  }
+
+
+  #theTable{
+    grid-template-columns: repeat( 5, auto );
+  }
+
+
+}

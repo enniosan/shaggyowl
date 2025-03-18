@@ -5,7 +5,11 @@ class Main extends CI_Controller {
 
 	public function __construct() {
 		parent::__construct();
+
+		#	setto le librerie necessarie
 		$this->load->library('form_validation');
+		$this->load->library('session'); 
+	
 	}
 
 	/**
@@ -25,61 +29,52 @@ class Main extends CI_Controller {
 	
 	*/
 
-	public function index()
-	{
+	public function index(){
+	
 		$this->load->view('login');
+	
 	}
 
 
 	/**
 	 * Funzione per l'autenticazione dell'utente
-	 *
-	 * @return void
+	 *	-	verifica se l'utente esiste
+	 *	-	se l'utente esiste, setta la sessione
+	 * 	-	se l'utente esiste, restituisce anche la location di destinazione
+	 *	-	se l'utente non esiste, restituisce un errore
+
+	 * @return json dell'esito dell'operazione
 	 */
 
-
+	
 	public function authLogin( ){
-
+		
 		if ($this->input->server('REQUEST_METHOD') !== 'POST') {
+
+			error_log("tentativo di accesso con metodo non permesso");
+
             show_error('ES:: Invalid request method', 405);
+			die;
         }
 
-		#	out
-		
-
-		$out = [
-			"success" 	=> false,
-			"message" 	=> "Operazione non conclusa",
-			"location" 	=> false,
-			"w" 		=> false,
-		];
-
-
 		#	leggo i dati in arrivo
-		$body = json_decode( file_get_contents("php://input"), 1 );
+
+		$body = [];
+		$body['username'] = $this->input->post()['username'];
+		$body['password'] = $this->input->post()['password'];
 
 		#	gestione della validazione
 
 		$this->form_validation->set_data($body);
-		$this->form_validation->set_rules('username', 'Username', 'required|alpha_numeric');
-		$this->form_validation->set_rules('password', 'Password', 'required');
+		$this->form_validation->set_rules('username', 'Username', 'required|alpha_numeric|max_length[30]');
+		$this->form_validation->set_rules('password', 'Password', 'required|max_length[30]');
 
-		#	imposto qui i dati dell'eventuale errore per due motivi
-		#	il primo è che mi segnala se le operazioni sono andate avanti e non si è bloccato il codice prima
-		#	la seconda è per evitare l'else e lasciare solo la condizione pulita
-		#	tanto non devo segnalare all'utente informazioni che possano compromettere la sicurezza della login
-
-		
-
-		#	se i dati sono corretti...
 
 		if ( $this->form_validation->run() ) {
-			
+
 			#	modelli e librerie
 			
 			$this->load->model('Admins_model'); 
-			$this->load->library('auth_library');
-			
 			
 			#	se i dati sono corretti
 			$username = $body['username'];
@@ -90,37 +85,78 @@ class Main extends CI_Controller {
 			$admin = $this->Admins_model->getAdminUser($username, $password);
 
 
-			if ($admin !== false) {
-
-				#	se l'utente esiste
-
-				$this->session->set_userdata('logged_in',	true			);
-				$this->session->set_userdata('email', 		$admin->email			);
-				$this->session->set_userdata('name', 		$admin->name	);
-				$this->session->set_userdata('email', 		$admin->email	);
-				$this->session->set_userdata('id', 			$admin->id		);
-
-				$out['success'] = true;
-				$out['message'] = "Credenziali corrette";
-				$out['location'] = "/app";
+			#	se ho un utente 
+			if ( !$admin ) {
 				
-				
-				
+				$loginError = true;
+
 			}else{
 				
-				$out['w'] 		= __LINE__;
+				#	se l'utente esiste
+
+				$last_access = date('Y-m-d H:i:s');
+				
+				$this->Admins_model->updateLastAccessTime ($admin -> id, $last_access);
+
+
+				#	azioni
+				if( json_decode( $admin->roleattributes, 1 ) ){
+					$admin->roleattributes = json_decode( $admin->roleattributes );
+				}else{
+
+					error_log("Errore nel json_decode delle azioni");
+
+					$admin->roleattributes = ["list" => "true"];
+				}
+
+				$this->session->set_userdata('logged_in',	true			);
+				
+				$this->session->set_userdata('id', 			$admin->id		);
+				$this->session->set_userdata('name', 		$admin->name	);
+				$this->session->set_userdata('email', 		$admin->email			);
+				$this->session->set_userdata('username', 	$admin->username	);
+				$this->session->set_userdata('last_access', $last_access	);
+				
+				$this->session->set_userdata('level', 		$admin->level 		);
+				$this->session->set_userdata('role', 		$admin->rolename );
+				$this->session->set_userdata('actions', 	$admin->roleattributes );
+				
+				
+				#	default per l'anagrafica
+
+				$this->session->set_userdata('campo', "id" );
+				$this->session->set_userdata('verso', "DESC" );
+				$this->session->set_userdata('ipp', 10 );
+				$this->session->set_userdata('pagina', 0 );
+
+
+				error_log("redirect verso app");
+				redirect( "/app");
+				die;
 			}
-			
-		}else{
-			
-			$out['w'] 		= __LINE__;
 
 		}
 
-		$out['message'] = "Credenziali non corrette";
 
-		header('Content-Type: application/json');
-		echo json_encode($out);
+		#	uscita con errore
+	
+		if( $loginError ){
+
+			$this->session->set_flashdata('errors', "Credenziali non corrette");
+			$this->session->set_flashdata('username', $this->input->post('username'));
+			
+		}else{
+			$this->session->set_flashdata('errors', "Errore generico");
+		}
+
+		redirect('/');	
 		die;
+
 	}
+
+	public function logout() {
+
+		$this->session->sess_destroy();
+		redirect('/');
+	}	
 }

@@ -64,19 +64,12 @@ $route['login/auth']    = 'main/authLogin';
 $route['logout']        = 'main/logout';
 
 
-#   rotta app principale
-$route['app']           = 'app/index'; // Visualizza tutti gli utenti
+# Rotta app principale
 
+$route['app']       = 'app/index';              // main root
 
+$route['app/del']       = 'app/deleteUser';     // Cancella un utente esistente
+$route['app/mod']       = 'app/modUser';        // Update
+$route['app/ins']       = 'app/insUser';        // Insert
+$route['app/get/(:id)'] = 'app/getUser/$1';     // Prende i dati per l'utente richiesto
 
-/*
-
-# Rotte per gestire l'app / CRUD
-
-$route['app/create']        = 'app/create'; // Crea un nuovo utente
-$route['app/store']         = 'app/store'; // Salva un nuovo utente
-$route['app/edit/(:id)']    = 'app/edit/$1'; // Modifica un utente esistente
-$route['app/update/(:id)']  = 'app/update/$1'; // Aggiorna un utente esistente
-$route['app/delete/(:nid)'] = 'app/delete/$1'; // Cancella un utente esistente
-
-*/

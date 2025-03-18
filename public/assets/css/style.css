@@ -3,9 +3,10 @@
   --primary-color: #007bff;
   --secondary-color: #61919E;
   --bg-dark: rgb(24, 56, 67);
-
-  --dark-color: #343a40;
-  --light-color: #fff0;
+  
+  --head-color: #46707c;
+  --dark-color: #262B2C;
+  --light-color: #fff;
   --danger-color: #dc3545;
   --success-color: #28a745;
   --warning-color: #ffc107;
@@ -19,20 +20,25 @@
 }
 
 *{
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  font-size: 12px;
 }
 
 html, body {
   font-family: 'Raleway' ;
   font-size: 16px;
   line-height: 1.6;
-  color: #333;
+  color: #262B2C;
+
   background: #f4f4f4;
+  background-image: linear-gradient( 165deg, var(--light-color) 50%, var(--secondary-color) 100%);
   width: 100%;
   min-height: 100vh;
-
+  box-sizing: border-box;
+  overflow-x: hidden;
+  
 }
 
 a {
@@ -59,6 +65,8 @@ ul {
 
 .login-box{
   background-color: rgba(0,0,0,0.3);
+  background-image: linear-gradient( 165deg, #FFFA 50%, #CCCA 100%);
+
 
   padding: 20px;
   border-radius: 10px;
