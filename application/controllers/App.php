@@ -8,8 +8,10 @@ class App extends CI_Controller {
 		parent::__construct();
 		
 		$this->load->library('form_validation');
-		$this->load->library('session'); 
+		$this->load->library('session');
+
 		$this->load->library('UserCheck'); 
+		$this->load->library('DataCheck'); 
 	
 		$this->load->model('Customers_model');
 	}
@@ -38,6 +40,7 @@ class App extends CI_Controller {
 
 	public function index()	{
 
+
 		$this->usercheck->check_login(); 
 		
 		/*	creazione dell'interfaccia per gestire l'anagrafica e il crud	
@@ -45,81 +48,45 @@ class App extends CI_Controller {
 			in modo da poter gestire il tutto utilizzando la minor quantità di codice possibile
 		*/
 
-		#	faccio un controllo sui dati
-		#	carico il model della tabella utenti
-		//$this->load->model('Customers_model');
-
 		#	eseguo una count sui valori presenti
 		$count = $this->Customers_model->count();
-
-		#	$customers = $this->Customers_model->g\et_all();
 
 		# controllo e sanitizzo i dati in arrivo
 
 		$ipps = [ 10, 20, 50 ];		#	elementi per pagina
-		$campo = "id";				#	campo di ordinasmento
+		$campo = "id";				#	campo di ordinamento scelto per default
 
-		#	la pagina non dev'essere inferiore a 0
 
-		if( $this -> input -> get('p') ){
-
-			$pagina = (int) $this -> input -> get('p') -1;
-			
-			if( $pagina < 0 ){
-
-				$pagina = 0;
-			}
-
-			$this -> session -> set_userdata('pagina', $pagina );
-		}
-
+		/*	verifica dei dati
+			oer testare i dati in input utilizzo delle regex
+			è un metodo alternativo alla validazione dei dati di codeigniter
 		
-		#	il campo per cui si richiede l'ordinamento deve essere presente nella tabella
+		*/
 
-		if( $this -> input -> get('o') ){
-			
-			#	verifica se il campo è nella tabella
-			$campi = $this -> Customers_model -> get_fields();
-			
-			$campo = "id";	#	default
+		# regole per la gestione degli input
+		
+		$rules = [
+			"p" 	=> [ "regex" => "/^[0-9]+$/", "type" => "int", "min" => 0, "default" => 0 ],
+			"o" 	=> [ "regex" => "/^[a-zA-Z_]+$/", "type" => "text", "in" => $this -> Customers_model -> get_fields(), "default" => $campo ],
+			"v" 	=> [ "regex" => "/^[0-2]$/", "type" => "int",  "default" => 2 ],
+			"ipp" 	=> [ "regex" => "/^(".implode("|", $ipps).")+$/", "type" => "int", "default" => 10 ]
+		];
 
-			if( in_array( $this -> input -> get('o'), $campi ) ){
+		$data = $this -> datacheck -> checkData( $this -> input -> get(), $rules );
 
-				$campo = $this -> input -> get('o');
-			
-			}
 
-			$this -> session -> set_userdata('campo', $campo);
+		#	associo i dati sanificati alla sessione
+		#	per poter fare le query e non doverli passare ogni volta
+
+
+		foreach( $data as $k => $v ){
+
+			$this -> session -> set_userdata( $k, $v );
+
 		}
-
-
-		#	il verso dell'ordinamento deve essere ASC o DESC
-
-		if( $this -> input -> get('v') ){
-
-			$verso = (int)strtoupper( $this -> input -> get('v') );
-			
-			$this -> session -> set_userdata('verso', $verso );
-			
-		}
-
-		#	il numero di elementi per pagina deve essere uno dei valori possibili
-
-		if( $this -> input -> get('ipp') ){
-
-			$ipp = 10;	#	default
-
-			if( in_array( (int) $this -> input -> get('ipp') , $ipps ) ){
-
-				$ipp = (int) $this -> input -> get('ipp');
-				
-			}		
-			
-			$this -> session -> set_userdata('ipp', $ipp );
-		}
-
-
-		#	la vista è pronta, manca solo il contenuto
+		
+		
+		#	variabili per la pagina
 
 		$app_config = [
 
@@ -127,10 +94,10 @@ class App extends CI_Controller {
 			"elementi_totali" => $count,
 			
 			"default_elementi_per_pagina" => $this -> session -> userdata()['ipp'],
-			"pagina_corrente" => $this -> session -> userdata()['pagina'],
+			"pagina_corrente" => $this -> session -> userdata()['p'],
+			"ordinamento" 	=> $this -> session -> userdata()['o'],
+			"verso" 		=> $this -> session -> userdata()['v'],
 			"pagine_totali" => ceil($count / $this -> session -> userdata()['ipp'] ),
-			"ordinamento" 	=> $this -> session -> userdata()['campo'],
-			"verso" 		=> $this -> session -> userdata()['verso'],
 			"campi"			=> $this -> Customers_model -> get_fields(),
 
 			#	campi non prettamente necessari in caso di schermi piccoli
@@ -138,25 +105,25 @@ class App extends CI_Controller {
 
 		];
 
-
 		#	verifico se l'utente ha il diritto di visualizzare i dati
 
+	
 		$content = [];
 
 		if( $this -> session -> userdata()['actions']->list ){
 
 			$content = $this -> Customers_model -> get_all( 
 				$this -> session -> userdata()['ipp'],
-				$this -> session -> userdata()['pagina'],
-				$this -> session -> userdata()['campo'],
-				$this -> session -> userdata()['verso']
+				$this -> session -> userdata()['p'],
+				$this -> session -> userdata()['o'],
+				$this -> session -> userdata()['v']
 			);
+
+			//dd( $this -> session -> userdata() );
 
 		}
 
-		#	prendo il contenuto
-
-		#	creo la tabellagenero i dati per la vista
+		
 		$data = [
 			'title' 	=> 'Gestione Anagrafica',
             'user' 		=> $this -> session -> userdata,            
@@ -166,14 +133,38 @@ class App extends CI_Controller {
 
         // Carica il template con i dati dinamici
 
+
         $this->load->view('app/base', $data);
 	}
 
 
+	public function getUser($id){
+		header("content-type: application/json");
+		echo json_encode( $this -> Customers_model -> get_by_id( (int)$id ) ?? []	  ) ;
+		die;
+	}
+
+
+
 	public function delete(  ){
 
-		dd( $this->input->server('REQUEST_METHOD'), $this -> input );
+		if ( $this->input->server('REQUEST_METHOD') !== 'POST') {
 
+			error_log("tentativo di accesso con metodo non permesso");
+            show_error('ES:: Invalid request method', 405);
+			die;
+
+        }
+
+		#	cancello l'utente
+		$this -> Customers_model -> delete( (int) $this -> input -> post('id') );
+
+		redirect("/app");
+		die;
+	}
+
+
+	public function updateUser(  ){
 
 
 		if ( $this->input->server('REQUEST_METHOD') !== 'POST') {
@@ -184,14 +175,50 @@ class App extends CI_Controller {
 			die;
         }
 
+		
+		$formData = [
+			"id" => $this->input->post('id'),
+			"nome" => $this->input->post('nome'),
+			"cognome" => $this->input->post('cognome'),
+			"email" => $this->input->post('email'),
+			"indirizzo" => $this->input->post('indirizzo'),
+			"sesso" => $this->input->post('sesso')
+		];
+		
+		$this->form_validation->set_data( $formData );
 
-		dd( $id );
+		$this->form_validation->set_rules('id', 'Id', 'required|numeric');
+		$this->form_validation->set_rules('nome', 'Nome', 'required|max_length[100]|regex_match[/^([a-z ])+$/i]');
+		$this->form_validation->set_rules('cognome', 'Cognome', 'required|max_length[100]|regex_match[/^([a-z ])+$/i]');
+		$this->form_validation->set_rules('email', 'Email', 'required|max_length[100]|valid_email');
+		$this->form_validation->set_rules('indirizzo', 'Indirizzo', 'max_length[200]');
+		$this->form_validation->set_rules('sesso', 'Sesso', "required|max_length[1]|alpha");
 
 
-		#	cancello l'utente
-		$this -> Customers_model -> delete( (int) $id );
+
+		$out = [
+			"status" => "failed",
+			"message" => ""
+		];
+
+		if ( $this->form_validation->run() ) {
+
+			$this -> Customers_model -> update( (int) $formData['id'], $formData );
+
+			$out['message'] = "Dati modificati  correttamente";
+			$out['status'] = "success";
+
+		}else{
+			
+			$out['message'] = $this->form_validation->error_array();
+			
+		}	
+
+		$this -> session -> set_flashdata( "esitoForm", $out );
+
 
 		redirect("/app");
 		die;
 	}
+	
 }

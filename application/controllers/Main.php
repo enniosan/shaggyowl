@@ -124,10 +124,10 @@ class Main extends CI_Controller {
 				
 				#	default per l'anagrafica
 
-				$this->session->set_userdata('campo', "id" );
-				$this->session->set_userdata('verso', "DESC" );
+				$this->session->set_userdata('p', 0 );
+				$this->session->set_userdata('o', "id" );
+				$this->session->set_userdata('v', "DESC" );
 				$this->session->set_userdata('ipp', 10 );
-				$this->session->set_userdata('pagina', 0 );
 
 
 				error_log("redirect verso app");

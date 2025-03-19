@@ -34,7 +34,6 @@ class Customers_model extends CI_Model {
         if( $dir == 2 )
             $verso = "DESC";
 
-
         $query = $this->db
                     ->order_by($campo, $verso)
                     ->limit($ipp, $pagina * $ipp)
@@ -47,7 +46,13 @@ class Customers_model extends CI_Model {
     }
 
     public function get_by_id($id) {
-        $query = $this->db->get_where($this->table, array('id' => $id));
+
+        $query = $this->db->get_where($this->table, [
+            'id' => $id,
+            'soft_deleted' => 0,
+        
+        ]);
+        
         return $query->row();
     }
 

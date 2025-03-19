@@ -12,44 +12,86 @@
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" type="text/css" href="/assets/css/style.css" await>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/app.css" >
+    
+    <script src="/assets/js/app.js" defer></script>
+    
+
+        
 
     <!-- csrf   -->
     <meta name="csrf-token-name" content="<?php echo $this->security->get_csrf_token_name(); ?>">
     <meta name="csrf-token-hash" content="<?php echo $this->security->get_csrf_hash(); ?>">
 
-</head>
+    <script>
+        toaster = false;
+
+        <?php
+        
+        if(  isset( $this -> session -> flashdata()['esitoForm'] )  ){
+            echo "toaster = { type : '" . $this -> session -> flashdata()['esitoForm']['status'] . "', message : '" . addslashes( $this -> session -> flashdata()['esitoForm']['message'] ) . "' };";
+        }
+        ?>
+    </script>
 
 </head> 
 
 <body>
-        
-    <div id='modalContainer' style='display:none'>
-        <div id='editMask'>
+    
+    <div id='toaster' class='hiddener'>
+        <img id='toaster-ico' src='/assets/icons/ko.svg' alt='ko' title='ko' loading=lazy width=30 height=30> 
+        <div id='toaster-message'>Message</div>
+    </div>
+
+    <div id='modalContainer' class='hiddener'>
+        <div class='modalMask hiddener' id='editMask'>
             <div id='editTitle'> *** TITOLO ***</div>
                 
-            <form id='editForm'>
+            <form id='editForm' action='' method='post'>
+            
+                <label for='e_nome'>Nome *</label>
+                <input type='text' id='e_nome' name='nome' placeholder='Nome' required>
                 
-                <input type='hidden' id='editId' name='id'>
-                <input type='text' id='editName' name='nome' placeholder='Nome'>
-                <input type='text' id='editSurname' name='cognome' placeholder='Cognome'>
+                <label for='e_cognome'>Cognome *</label>
+                <input type='text' id='e_cognome' name='cognome' placeholder='Cognome' required>
                 
-                <input type='email' id='editEmail' name='email' placeholder='Email'>
-                <input type='text' id='editAddress' name='indirizzo' placeholder='Indirizzo'>
+                <label for='e_email'>Email*</label>
+                <input type='email'id='e_email' name='email' placeholder='Email'>
                 
-                <select id='editGender'>
-                    <option value='' default disabled></option>
+                <label for='e_indirizzo'>Indirizzo</label>
+                <input type='text' id='e_indirizzo' name='indirizzo' placeholder='Indirizzo'>
+                
+                <label for='e_sesso'>Sesso</label>
+
+                <select id='e_sesso' name='sesso'>
+                    <option value='' default disabled>Seleziona un'opzione</option>
                     <option value='M'>Maschio</option>
                     <option value='F'>Femmina</option>
-                    <option value='N'>Non voglio specificarlo</option>
                 </select>
+
+                <input type='hidden'    id='e_id' name='id'>
+
+
             </form>
 
             <div id='editActions'>
-                <div class='button' id='editCancel'>Annulla</div>
-                <div class='button' id='editSave'>Salva</div>
+                <div class='service-button' id='editCancel'>Chiudi</div>
+                <div class='action-button' id='editSave' >Salva</div>
             </div>
 
         </div>
+
+        <div class='modalMask hiddener' id='waitMask'>
+            
+            <img src='/assets/icons/admin.svg' alt='wait' title='wait' loading=lazy width=100 height=100 id='waitingIcon'>
+
+        </div>
+
+        <div class='modalMask hiddener' id='errorMask'>
+            <h3>Si è verifcato un errore.</h3>
+        </div>
+
     </div>
 
     <div id='appContainer'>
@@ -77,81 +119,93 @@
 
         <div id='theTable'>
             
-                <?php 
+            <?php 
 
-                    #   costruzione tabella
+                #   costruzione tabella
+
+                foreach( $app_config['campi'] as $campo ){
+
+                    /*
+                        questa l'ho messa solo perchè era uscita al colloquio e stavo pensando
+                        ad un modo per implementarla qui ! :-)
+
+                    */
+                    $extraClass = ( isset( $app_config['hiddenables'][$campo] ) ) ? "hiddenXs" : "";
+
+                    /*  gestione del sorting */
+                    $sorting = "<div class='sorter' data-field=\"$campo\" data-sort=0>
+                    
+                    <img src=/assets/icons/neutro.svg alt='neutro' title='neutro' loading=lazy width=20 height=20>
+                    
+                    </div>";
+
+                    if( $app_config['ordinamento'] == $campo ){
+
+                        if( $app_config['verso'] == 2){
+                            $sorting = "<div class='sorter' data-field=\"$campo\" data-sort=1>
+                                <img src='/assets/icons/desc.svg' alt='clicca per cambiare ordinamento' title='clicca per cambiare ordinamento' loading=lazy width=20 height=20>
+                    
+                            </div>"; //  desc
+                        }else{
+                            $sorting = "<div class='sorter' data-field=\"$campo\" data-sort=2>
+                                <img src='/assets/icons/asc.svg' alt='clicca per cambiare ordinamento' title='clicca per cambiare ordinamento' loading=lazy width=20 height=20>
+                    
+                            </div>"; //  asc
+                        }
+                    }
+
+                    echo "<div class='headField $extraClass'>$campo $sorting</div>";
+                
+                }
+            
+                #   azioni
+                echo "<div class='headField'>
+                        
+                </div>";
+
+                $extraClass = "";
+
+                foreach( $content as $idx => $anagrafica ){
+
+                    #   diegno i campi
 
                     foreach( $app_config['campi'] as $campo ){
 
-                        /*
-                            questa l'ho messa solo perchè era uscita al colloquio e stavo pensando
-                            ad un modo per implementarla qui ! :-)
-
-                        */
                         $extraClass = ( isset( $app_config['hiddenables'][$campo] ) ) ? "hiddenXs" : "";
 
-                        /*  gestione del sorting */
-                        $sorting = "<div class='sorter' data-field=\"$campo\" data-sort=0>-</div>";
+                        echo "<div class='commonField row_".$idx." $extraClass' data-row='" . $idx . "' > " . $anagrafica -> $campo ."</div>";
+                    }
 
-                        if( $app_config['ordinamento'] == $campo ){
-
-                            if( $app_config['verso'] == 2){
-                                $sorting = "<div class='sorter' data-field=\"$campo\" data-sort=1>▼</div>"; //  desc
-                            }else{
-                                $sorting = "<div class='sorter' data-field=\"$campo\" data-sort=2>▲</div>"; //  asc
-                            }
-
-                        }
-
-                        echo "<div class='headField $extraClass'>$campo $sorting</div>";
+                    #   disegno le azioni
                     
-                    }
-                
-                    #   azioni
-                    echo "<div class='headField'></div>";
+                    echo "<div class='actions commonField row_".$idx." ' data-row='" . $idx . "' >";
 
-                    $extraClass = "";
+                    /*                        
+                    if( $this -> session -> userdata()['actions']->show )
+                        echo "<img width=20 height=20 class='action-icon'src='/assets/icons/view.svg' title='edit' name='edit' data-action='view' data-id='" . $anagrafica -> id . "'>";
+                    /** */
 
-                    foreach( $content as $idx => $anagrafica ){
-
-                        #   diegno i campi
-
-                        foreach( $app_config['campi'] as $campo ){
-
-                            $extraClass = ( isset( $app_config['hiddenables'][$campo] ) ) ? "hiddenXs" : "";
-    
-                            echo "<div class='commonField row_".$idx." $extraClass' data-row='" . $idx . "' > " . $anagrafica -> $campo ."</div>";
-                        }
-
-                        #   disegno le azioni
+                    if( $this -> session -> userdata()['actions']->edit )
+                        echo "<img width=20 height=20 class='action-icon'src='/assets/icons/edit.svg' title='edit' name='edit' data-action='edit' data-id='" . $anagrafica -> id . "'>";
+                    
+                    if( $this -> session -> userdata()['actions']->delete ){
                         
-                        echo "<div class='actions commonField row_".$idx." ' data-row='" . $idx . "' >";
-
-                        
-                        if( $this -> session -> userdata()['actions']->show )
-                            echo "<img width=20 height=20 class='action-icon'src='/assets/icons/view.svg' title='edit' name='edit' data-action='view' data-id='" . $anagrafica -> id . "'>";
-
-                        if( $this -> session -> userdata()['actions']->edit )
-                            echo "<img width=20 height=20 class='action-icon'src='/assets/icons/edit.svg' title='edit' name='edit' data-action='edit' data-id='" . $anagrafica -> id . "'>";
-                        
-                        if( $this -> session -> userdata()['actions']->delete ){
+                        echo "<img 
+                            class='action-icon' 
+                            src='/assets/icons/trash.svg' 
+                            title='delete' 
+                            name='delete' 
                             
-                            echo "<img 
-                                class='action-icon' 
-                                src='/assets/icons/trash.svg' 
-                                title='delete' 
-                                name='delete' 
-                                
-                                data-action='delete' 
-                                data-id='" . $anagrafica -> id . "' >";
-                          
-                        }
-
-                        echo "</div>";
+                            data-action='delete' 
+                            data-id='" . $anagrafica -> id . "' >";
+                        
                     }
-                      
-                ?>
-            
+
+                    echo "</div>";
+                }
+                    
+            ?>
+        
 
         </div>
 
@@ -160,12 +214,15 @@
                 <span class='hiddenXs'>Pagina:</span>
                 <?php
 
-                    for( $i = 1 ; $i <= $app_config['pagine_totali']; $i++){
+                    for( $i = 0 ; $i < $app_config['pagine_totali']; $i++){
 
-                        if( $i == ( $app_config['pagina_corrente'] + 1 ) )
-                            echo "<b>$i</b> ";
-                        else
-                            echo "<a href=/app?p=$i>$i</a> ";
+                        $p = $i + 1;
+
+                        if( $i == $app_config['pagina_corrente'] ){
+                            echo "<b>$p</b> ";                        
+                        }else{
+                            echo "<a href=/app?p=$i>$p</a> ";
+                        }
                     }   
                 ?>
 
@@ -175,6 +232,9 @@
             <div id='totale'>
                 <span class='hiddenXs'>Sono presenti: </span>
                 <?= $app_config['elementi_totali']; echo "&nbsp;"; echo ($app_config['elementi_totali'] == 1) ? "elemento" : "elementi" ?> 
+
+                <img src='/assets/icons/new.svg' alt='add' title='add' loading=lazy width=30 height=30 id='addButton'>
+
             </div>
 
             <div id='elementipp'>
@@ -202,10 +262,5 @@
     </div>
 
 </body>
-
-<script src="/assets/js/app.js" defer></script>
-<link rel="stylesheet" type="text/css" href="/assets/css/app.css" await>
-
-
 
 </html>
