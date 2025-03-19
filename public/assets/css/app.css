@@ -182,7 +182,7 @@
 }
 
 #header .username{
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
 #header .username small{
@@ -190,6 +190,16 @@
   line-height: .6rem;
   color: var(--secondary-color);
 }
+
+#header .title{
+  place-self: center center;
+  font-weight: 700;
+  font-size: 1.3rem; 
+  line-height: 1.4rem;
+
+}
+
+
 
 #header .filler{
   text-align:right;
@@ -218,8 +228,11 @@
   overflow-y: auto;
   margin-top: 0px;
 
-  height: calc( 100vh - 100px );
+  min-height: 200px;;
+  max-height: calc( 100vh - 100px );
 }
+
+
 
 .sorter{
   cursor: pointer;
@@ -229,7 +242,6 @@
 
 .filterField{
   position: absolute;
-  width: 200px;
   top:30px;
   right: 0px;
   display: grid;
@@ -239,6 +251,18 @@
   gap: 5px;
   border-radius: 3px;
   background-color: var(--head-color);
+}
+
+.filterInput{
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #CCC;
+  font-size: 1.1rem;
+}
+
+.filterClose{
+  user-select: none;
+  cursor: pointer;
 }
 
 
@@ -258,13 +282,17 @@
   font-size: 1.1rem;
   text-transform: uppercase;
   font-weight: 700;
+
+  height: 40px!important;
 }
 
 
 .commonField{
   padding: 10px;
   transition: 0.5s background-color;  
-  height: 40px;
+
+  
+  height: 40px!important;
 
 }
 
@@ -371,6 +399,7 @@
     font-weight: 700;
     font-size: 1.2rem; 
     line-height: 1.2rem;
+
   }
 
   #header .filler{

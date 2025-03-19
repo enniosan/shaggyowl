@@ -50,6 +50,34 @@ document.querySelectorAll('.filter').forEach( (item) => {
 } );
 
 
+document.querySelectorAll('.filterBtn').forEach( (item) => { 
+
+    item.addEventListener( "click" , (e) => {
+
+        campo = item.dataset.field;
+
+        f = campo;
+        t = document.querySelector("#filterField_" + campo + " input").value;
+
+        document.location.href="/app?f=" + f + "&t=" + t;
+
+    })
+} );
+
+document.querySelectorAll('.filterClose').forEach( (item) => { 
+
+    item.addEventListener( "click" , (e) => {
+
+        document.querySelectorAll('.filterField').forEach( (cell) => {
+            cell.classList.remove("hiddener");
+            cell.classList.add("hiddener");
+        });
+    })
+} );
+
+
+
+
 
 
 document.querySelectorAll('.commonField').forEach( (item) => { 

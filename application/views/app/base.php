@@ -100,8 +100,6 @@
             
             <div class='title'><?= $title ?>
         
-                <br><input type='text' id='filtro' placeholder='filtro' > <button id='filtroBtn'>Filtra</button>
-                        
         </div>
 
             <div class='filler'>
@@ -152,22 +150,7 @@
                             
                     $current_filter = $this -> session -> userdata()['filtri'][$campo];
                         
-                    $filter = "<div class='filter' data-field='".$campo."' data-filter='".$current_filter."'>
-                    
-                        <div class='filterField hiddener' id='filterField_".$campo."'>
-                            
-                            <input  type='text' 
-                                    class='filterInput' 
-                                    placeholder='inserisci del testo' value='".$current_filter."'
-                                    id='filter_".$campo."'
-                            >
-
-                            <button class='filterBtn' data-campo='".$campo."' id='filterBtn_".$campo."'>Filtra</button>
-                            
-                            <span>X chiudi</span>
-
-                        </div>
-                        ";
+                    $filter = "<div class='filter' data-field='".$campo."' data-filter='".$current_filter."'>";
 
                     if( empty( $current_filter ) ){
                         $filter .= "<img src='/assets/icons/filter-off.svg' alt='filtro non impostato' title='filtro non imposstato' loading=lazy width=20 height=20>";
@@ -175,7 +158,25 @@
                         $filter .= "<img src='/assets/icons/filter-on.svg' alt='filtro impostato : " . addslashes( $current_filter ) . "' title='filter' loading=lazy width=20 height=20>";
 
                     }
-                    $filter .= "</div>";
+                    
+                    
+                    $filter .= "</div>
+                    
+                    <dialog class='filterField hiddener' id='filterField_".$campo."'>
+                            
+                            <input  type='text' 
+                                    class='filterInput' 
+                                    placeholder='Filtra ".$campo." ' value='".$current_filter."'
+                                    id='filter_".$campo."'
+                            >
+
+                            <button class='filterBtn' data-field='".$campo."' id='filterBtn_".$campo."'>Filtra</button>
+                            
+                            <span class='filterClose' >X chiudi</span>
+
+                        </dialog>
+                    
+                    ";
 
 
 
