@@ -13,11 +13,44 @@ document.querySelector('#logout').addEventListener('click', function () {
 document.querySelectorAll('.sorter').forEach( (item) => { 
 
     item.addEventListener( "click" , (e) => {
+        sort = ( item.dataset.sort + 1 ) % 3;
 
-        document.location.href="/app?o=" + item.dataset.field + "&v=" + item.dataset.sort;
+        document.location.href="/app?o=" + item.dataset.field + "&v=" + sort;
     })
 
 } );
+
+li = "";
+
+document.querySelectorAll('.filter').forEach( (item) => { 
+
+    item.addEventListener( "click" , (e) => {
+
+        campo = item.dataset.field;
+        
+        if( item.dataset.open == 1 ){
+        //    document.querySelector("#filterField_" + campo ).classList.toggle("hiddener");
+        
+            item.dataset.open = 0;
+          //  return;
+        }
+
+        item.dataset.open = 1;
+
+        document.querySelectorAll('.filterField').forEach( (cell) => {
+            cell.classList.add("hiddener");
+        });
+
+
+        document.querySelector("#filterField_" + campo ).classList.toggle("hiddener");
+
+
+    })
+
+} );
+
+
+
 
 document.querySelectorAll('.commonField').forEach( (item) => { 
 
@@ -58,6 +91,13 @@ document.querySelectorAll('.action-icon').forEach( (item) => {
 
 } );
 
+document.querySelector('#addAnagraficaBtn').addEventListener( "click" , (e) => {
+
+    manageActions( false, 'insert' );
+
+});
+
+
 
 document.querySelector("#editCancel").addEventListener("click", (e) => {
     closeModal();
@@ -71,6 +111,8 @@ document.querySelector('#editSave').addEventListener('click', function (e) {
         
     token_name = document.querySelector('meta[name="csrf-token-name"]').content;
     token_value = document.querySelector('meta[name="csrf-token-hash"]').content;
+
+
 
 
     form = document.querySelector("#editForm");
@@ -88,52 +130,12 @@ document.querySelector('#editSave').addEventListener('click', function (e) {
         form.id.value = e.target.dataset.id;
     }
 
-    form.submit();
-
-
-    /*
-
-    //  recupero i dati dal form
-
-    params = {
-        nome: document.querySelector("#e_nome").value,
-        cognome: document.querySelector("#e_cognome").value,
-        email: document.querySelector("#e_email").value,
-        indirizzo: document.querySelector("#e_indirizzo").value,    
-        sesso: document.querySelector("#e_sesso").value
-    };
-
-    params[token_name] = token_value;
-
-    if( action == "update" ){
-        params.id = id;
+    if( form.checkValidity() == false ){
+        form.reportValidity();
+    }else{
+        form.submit();
     }
-
-    //  creo il form
-
-    form = new FormData();
-
-    for( i in params ){
-        form.append( i, params[i] );
-    }
-
-    //  invio i dati
-
-    form.action= "/app/" + action;
-    form.method = "POST";
-
-    console.log( form );
-
-    form.submit();
-    
-    */
-
 });
-
-
-
-
-
 
 
 showModal = ( mask ) => {
@@ -160,13 +162,11 @@ closeModal = () => {
 }
 
 
-
 manageActions = ( id, action ) => {
 
     // reset a default
     document.querySelector("#editSave").setAttribute("data-action", false );
     document.querySelector("#editSave").setAttribute("data-id", false );
-
 
     if( action == "delete"){
             
@@ -236,6 +236,15 @@ manageActions = ( id, action ) => {
 
         }
         
+    }else if( action == "insert"){
+        
+        document.querySelector("#editTitle").innerHTML = "Crea un nuovo utente";
+        document.querySelector("#editSave").setAttribute("data-action", "insert" );
+        document.querySelector("#editSave").setAttribute("data-id", '' );
+
+        showModal("waitMask");
+        setTimeout( () => { showModal("editMask"); }, 500);
+
     }
 }
 

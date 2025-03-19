@@ -66,13 +66,12 @@ $route['logout']        = 'main/logout';
 
 # Rotta app principale
 
-$route['app']           = 'app/index';              // main root
+$route['app']           = 'app/index';          // main root
 
-$route['app/delete']    = 'app/delete';     // Cancella un utente esistente
+$route['app/delete']    = 'app/delete';         // Cancella un utente esistente
 $route['app/update']    = 'app/updateUser';     // Aggiorna un utente esistente
+$route['app/insert']    = 'app/insertUser';     // Insert
 
-
-$route['app/insert']       = 'app/insUser';        // Insert
 $route['app/get/(:id)'] = 'app/getUser/$1';     // Prende i dati per l'utente richiesto
 
 #   rotta per metodo in classe App , metodo updateUser

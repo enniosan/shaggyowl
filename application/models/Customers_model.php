@@ -15,20 +15,32 @@ class Customers_model extends CI_Model {
     ];
 
     
-
     public function __construct() {
         $this->load->database();
     }
 
 
-    public function count() {
-        return $this->db->where("soft_deleted = 0") ->count_all_results($this->table);
+    public function count( $filtri = false) {
+        
+        $query = $this->db->where("soft_deleted = 0"); 
+        
+        if( $filtri ){
+        
+            foreach( $filtri as $k => $v ){
+                if( !empty( $v ) ){
+                    $query = $query->like($k, $v);
+                }
+            }
+
+        }
+        
+        return $query ->count_all_results($this->table);
     }
 
 
     #   ritorna tutti i dati in base ai parametri configurati in sessione
 
-    public function get_all( $ipp = 10, $pagina = 0, $campo = 'id', $dir = 1) {
+    public function get_all( $ipp = 10, $pagina = 0, $campo = 'id', $dir = 1, $filtro = false ) {
         
         $verso = "ASC";
         if( $dir == 2 )
@@ -39,11 +51,69 @@ class Customers_model extends CI_Model {
                     ->limit($ipp, $pagina * $ipp)
                     ->where("soft_deleted = 0");
 
+
+        if( $filtro ){
+
+            $query = $query->like('nome', $filtro);
+            $query = $query->or_like('cognome', $filtro);
+            $query = $query->or_like('email', $filtro);
+            $query = $query->or_like('indirizzo', $filtro);
+        }
+
+
         $query = $this->db->get($this->table);
 
 
         return $query->result();
     }
+
+
+
+    public function getAnagrafiche( $ipp = 10, $pagina = 0, $filtri = false, $ordinamento = false ) {
+        
+        #   costruisco la query
+
+        $query = $this->db
+                    ->limit($ipp, $pagina * $ipp)
+                    ->where("soft_deleted = 0");
+
+        if( $filtri ){
+
+            foreach( $filtri as $k => $v ){
+                if( !empty( $v ) ){
+                    $query = $query->like($k, $v);
+                }
+            }
+
+        }
+        
+        if( $ordinamento ){
+
+            foreach( $ordinamento as $k => $v ){
+                
+                switch( $v ){
+                    case 1:
+                        $query = $query->order_by($k, "ASC");
+                        break;
+                    case 2:
+                        $query = $query->order_by($k, "DESC");
+                        break;
+                }
+
+            }
+
+        }
+
+        $query = $this->db->get($this->table);
+
+
+        return $query->result();
+    }
+
+
+
+
+
 
     public function get_by_id($id) {
 

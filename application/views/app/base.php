@@ -12,13 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" type="text/css" href="/assets/css/style.css" await>
-    
-    <link rel="stylesheet" type="text/css" href="/assets/css/app.css" >
-    
+    <link rel="stylesheet" type="text/css" href="/assets/css/app.css" >    
     <script src="/assets/js/app.js" defer></script>
-    
-
-        
 
     <!-- csrf   -->
     <meta name="csrf-token-name" content="<?php echo $this->security->get_csrf_token_name(); ?>">
@@ -34,7 +29,6 @@
         }
         ?>
     </script>
-
 </head> 
 
 <body>
@@ -57,7 +51,7 @@
                 <input type='text' id='e_cognome' name='cognome' placeholder='Cognome' required>
                 
                 <label for='e_email'>Email*</label>
-                <input type='email'id='e_email' name='email' placeholder='Email'>
+                <input type='email' id='e_email' name='email' placeholder='Email' required>
                 
                 <label for='e_indirizzo'>Indirizzo</label>
                 <input type='text' id='e_indirizzo' name='indirizzo' placeholder='Indirizzo'>
@@ -104,7 +98,11 @@
                 <br><small class='lastaccess' >Ultimo accesso: <?= $user['last_access'] ?></small>
             </h4>
             
-            <div class='title'><?= $title ?></div>
+            <div class='title'><?= $title ?>
+        
+                <br><input type='text' id='filtro' placeholder='filtro' > <button id='filtroBtn'>Filtra</button>
+                        
+        </div>
 
             <div class='filler'>
                 <img id='logout' 
@@ -123,47 +121,77 @@
 
                 #   costruzione tabella
 
+                #   TABLE HEAD
+
                 foreach( $app_config['campi'] as $campo ){
 
-                    /*
-                        questa l'ho messa solo perchè era uscita al colloquio e stavo pensando
-                        ad un modo per implementarla qui ! :-)
-
-                    */
                     $extraClass = ( isset( $app_config['hiddenables'][$campo] ) ) ? "hiddenXs" : "";
-
+                    
                     /*  gestione del sorting */
-                    $sorting = "<div class='sorter' data-field=\"$campo\" data-sort=0>
                     
-                    <img src=/assets/icons/neutro.svg alt='neutro' title='neutro' loading=lazy width=20 height=20>
+                    $current_sort = $this -> session -> userdata()['ordinamento'][$campo];
                     
-                    </div>";
-
-                    if( $app_config['ordinamento'] == $campo ){
-
-                        if( $app_config['verso'] == 2){
-                            $sorting = "<div class='sorter' data-field=\"$campo\" data-sort=1>
-                                <img src='/assets/icons/desc.svg' alt='clicca per cambiare ordinamento' title='clicca per cambiare ordinamento' loading=lazy width=20 height=20>
+                    $sorting = "<div class='sorter' data-field='".$campo."' data-sort='".$current_sort."'>";
                     
-                            </div>"; //  desc
-                        }else{
-                            $sorting = "<div class='sorter' data-field=\"$campo\" data-sort=2>
-                                <img src='/assets/icons/asc.svg' alt='clicca per cambiare ordinamento' title='clicca per cambiare ordinamento' loading=lazy width=20 height=20>
-                    
-                            </div>"; //  asc
-                        }
+                    switch( $current_sort ){
+                        case 1:
+                            $sorting .= "<img src='/assets/icons/asc.svg' alt='asc' title='asc' loading=lazy width=20 height=20>";
+                            break;
+                        case 2:
+                            $sorting .= "<img src='/assets/icons/desc.svg' alt='desc' title='desc' loading=lazy width=20 height=20>";
+                            break;
+                            default:
+                            $sorting .= "<img src='/assets/icons/neutro.svg' alt='neutro' title='neutro' loading=lazy width=20 height=20>";
+                            break;
                     }
+                            
+                    $sorting .= "</div>";
+                    
+                    
+                    /*  gestione del filtro */
+                            
+                    $current_filter = $this -> session -> userdata()['filtri'][$campo];
+                        
+                    $filter = "<div class='filter' data-field='".$campo."' data-filter='".$current_filter."'>
+                    
+                        <div class='filterField hiddener' id='filterField_".$campo."'>
+                            
+                            <input  type='text' 
+                                    class='filterInput' 
+                                    placeholder='inserisci del testo' value='".$current_filter."'
+                                    id='filter_".$campo."'
+                            >
 
-                    echo "<div class='headField $extraClass'>$campo $sorting</div>";
+                            <button class='filterBtn' data-campo='".$campo."' id='filterBtn_".$campo."'>Filtra</button>
+                            
+                            <span>X chiudi</span>
+
+                        </div>
+                        ";
+
+                    if( empty( $current_filter ) ){
+                        $filter .= "<img src='/assets/icons/filter-off.svg' alt='filtro non impostato' title='filtro non imposstato' loading=lazy width=20 height=20>";
+                    }else{
+                        $filter .= "<img src='/assets/icons/filter-on.svg' alt='filtro impostato : " . addslashes( $current_filter ) . "' title='filter' loading=lazy width=20 height=20>";
+
+                    }
+                    $filter .= "</div>";
+
+
+
+                
+                    echo "<div class='headField $extraClass'>$campo $filter $sorting</div>";
                 
                 }
             
                 #   azioni
                 echo "<div class='headField'>
-                        
                 </div>";
 
                 $extraClass = "";
+
+                #   TABLE BODY
+
 
                 foreach( $content as $idx => $anagrafica ){
 
@@ -211,6 +239,7 @@
 
         <div id='navibar'>
             <div id='paginazione'>
+
                 <span class='hiddenXs'>Pagina:</span>
                 <?php
 
@@ -230,10 +259,21 @@
 
                  
             <div id='totale'>
-                <span class='hiddenXs'>Sono presenti: </span>
-                <?= $app_config['elementi_totali']; echo "&nbsp;"; echo ($app_config['elementi_totali'] == 1) ? "elemento" : "elementi" ?> 
+                    
+                <div>
+                    <span class='hiddenXs'>Sono presenti: </span>
+                    <?= $app_config['elementi_totali']; echo "&nbsp;"; echo ($app_config['elementi_totali'] == 1) ? "elemento" : "elementi" ?> 
+                </div>
 
-                <img src='/assets/icons/new.svg' alt='add' title='add' loading=lazy width=30 height=30 id='addButton'>
+                
+                <?php
+
+                if(  isset( $this -> session -> userdata()['actions']->create ) && $this -> session -> userdata()['actions']->create ){
+                    
+                    echo "<img src='/assets/icons/new.svg' alt='add' title='add' loading=lazy width=20 height=20 id='addAnagraficaBtn'>";
+                
+                }?>
+
 
             </div>
 
@@ -260,7 +300,6 @@
 
         </div>
     </div>
-
 </body>
 
 </html>
