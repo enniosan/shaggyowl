@@ -33,7 +33,12 @@ html, body {
   color: #262B2C;
 
   background: #f4f4f4;
-  background-image: linear-gradient( 165deg, var(--light-color) 50%, var(--secondary-color) 100%);
+  background-image: url("/assets/bgs/bg.svg"), linear-gradient( 165deg, var(--light-color) 50%, var(--secondary-color) 120%) ;
+  background-position: 50% 50%, 0 0;
+  background-attachment: fixed; 
+  background-repeat: no-repeat; 
+  
+  
   width: 100%;
   min-height: 100vh;
   box-sizing: border-box;

@@ -3,13 +3,15 @@
 /*  registro le interazioni */
 
 
+/*  tasto logout */
+
 document.querySelector('#logout').addEventListener('click', function () {
     if( confirm( "Uscire dall'applicazione ?") ){
         document.location.href="/logout";     
     }
 });
 
-
+/*  tasti per ordinare i campi */
 document.querySelectorAll('.sorter').forEach( (item) => { 
 
     item.addEventListener( "click" , (e) => {
@@ -20,8 +22,7 @@ document.querySelectorAll('.sorter').forEach( (item) => {
 
 } );
 
-li = "";
-
+/*  tasti per filtrare i campi */
 document.querySelectorAll('.filter').forEach( (item) => { 
 
     item.addEventListener( "click" , (e) => {
@@ -29,10 +30,7 @@ document.querySelectorAll('.filter').forEach( (item) => {
         campo = item.dataset.field;
         
         if( item.dataset.open == 1 ){
-        //    document.querySelector("#filterField_" + campo ).classList.toggle("hiddener");
-        
             item.dataset.open = 0;
-          //  return;
         }
 
         item.dataset.open = 1;
@@ -41,15 +39,11 @@ document.querySelectorAll('.filter').forEach( (item) => {
             cell.classList.add("hiddener");
         });
 
-
         document.querySelector("#filterField_" + campo ).classList.toggle("hiddener");
-
-
     })
-
 } );
 
-
+/*  tasti per l'invio del filtro impostato nel rispettivo campo testo */
 document.querySelectorAll('.filterBtn').forEach( (item) => { 
 
     item.addEventListener( "click" , (e) => {
@@ -63,11 +57,9 @@ document.querySelectorAll('.filterBtn').forEach( (item) => {
 
     })
 } );
-
+/*  chiusra del popup filtro */
 document.querySelectorAll('.filterClose').forEach( (item) => { 
-
     item.addEventListener( "click" , (e) => {
-
         document.querySelectorAll('.filterField').forEach( (cell) => {
             cell.classList.remove("hiddener");
             cell.classList.add("hiddener");
@@ -75,13 +67,9 @@ document.querySelectorAll('.filterClose').forEach( (item) => {
     })
 } );
 
-
-
-
-
-
+/*  evidenziazione della posizione del pouse / puntatore */
 document.querySelectorAll('.commonField').forEach( (item) => { 
-
+    
     item.addEventListener( "mouseover" , (e) => {
 
         dr = item.dataset.row;
@@ -100,12 +88,13 @@ document.querySelectorAll('.commonField').forEach( (item) => {
 
 } );
 
-
+/*  gestione degli oggetti per pagina   */
 document.querySelector("#changeIpp").addEventListener("change", (e) => {
     document.location.href = "/app?ipp=" + e.target.options[e.target.options.selectedIndex].value;
 });
 
 
+/*  gestione delle azioni della tabella */
 document.querySelectorAll('.action-icon').forEach( (item) => { 
 
     item.addEventListener( "click" , (e) => {
@@ -126,9 +115,10 @@ document.querySelector('#addAnagraficaBtn').addEventListener( "click" , (e) => {
 });
 
 
-
-document.querySelector("#editCancel").addEventListener("click", (e) => {
-    closeModal();
+document.querySelectorAll(".closeMask").forEach( (i) => { 
+    i.addEventListener("click", (e) => {
+        closeModal();
+    })
 });
 
 
@@ -270,9 +260,58 @@ manageActions = ( id, action ) => {
         document.querySelector("#editSave").setAttribute("data-action", "insert" );
         document.querySelector("#editSave").setAttribute("data-id", '' );
 
+        document.querySelectorAll(".formField").forEach( (i) => { i.value = ""; } );
+
         showModal("waitMask");
         setTimeout( () => { showModal("editMask"); }, 500);
 
+    }else if( action == "view"){
+        
+        showModal("waitMask");
+
+        try{
+
+            //  recupero i dati dell'utente
+
+            fetch( "/app/getUser/" + id ).then( (response => response.json()) ).then( (data) => {
+
+                if( data.id ){
+
+                    //  solo se ho l'utente
+                    //  imposto i dati per il l'esecuzione dell'azione
+                    
+                    document.querySelector("#viewMask .titolo").innerHTML = "Utente #" + data.id + " -" + data.nome + " " + data.cognome;
+                    
+                    document.querySelector("#viewMask .dati").innerHTML = "";
+                    
+                    for( i in data ){
+                        
+                        document.querySelector("#viewMask .dati").innerHTML += "<small> " + i + " </small><br><b>" + data[i] + "<br>";
+
+                    }
+
+                    setTimeout( () => { showModal("viewMask"); }, 500);
+
+                }else{
+
+                    alert('no');
+                    showModal("errorMask");
+
+                }
+            
+                console.log( data );
+            }).catch( (e) => {
+            
+                console.log( e );
+                showModal("errorMask");
+            });
+        }catch(e){
+
+            console.log( e );
+            showModal("errorMask");
+
+        }
+        
     }
 }
 

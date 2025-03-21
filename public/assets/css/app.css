@@ -42,7 +42,7 @@
   transition: 1s all;
 }
 
-#editMask{
+#editMask, #viewMask{
   background-color: #fff;
   border-radius: 20px;
   padding: 20px;
@@ -50,6 +50,29 @@
   grid-template-rows: 30px 1fr 30px;
 
 }
+
+#viewMask .titolo{
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 10px;
+  line-height: 1.4rem;
+  border-bottom: 1px solid #CCC;
+
+  height: auto;
+}
+
+#viewMask .dati{
+  font-size: 1rem;
+  font-weight: 300;
+  padding: 10px;
+  line-height: 1.4rem;
+  border-bottom: 1px solid #CCC;
+  width: clamp( 300px, 90%, 600px );
+  height: auto;
+}
+
+
 
 #editTitle{
   
@@ -218,6 +241,16 @@
 
 /*  main table / data container */
 
+#tableContainer{
+
+  overflow-y: auto;
+  margin-top: 0px;
+
+  height: clamp( calc( 100vh - 100px ), 100px, 100vh );
+
+}
+
+
 #theTable{
   width: 100%;
   margin:auto;
@@ -225,12 +258,9 @@
   grid-template-rows: auto;
   grid-template-columns: repeat( 7, auto );
   /**/gap: 1px;
-  overflow-y: auto;
-  margin-top: 0px;
-
-  min-height: 200px;;
-  max-height: calc( 100vh - 100px );
 }
+
+
 
 
 
@@ -291,9 +321,7 @@
   padding: 10px;
   transition: 0.5s background-color;  
 
-  
   height: 40px!important;
-
 }
 
 .commonField:hover{
@@ -364,12 +392,7 @@
   display: grid;
   grid-auto-flow: column;
   place-items: center center;
-
-
 }
-
-
-
 
 @media(max-width: 600px){
 
@@ -422,6 +445,12 @@
   .headField{
     font-size: 0.6rem;
     font-weight: 500;
+
+    grid-template-columns: 1fr 15px 15px;
   }
+
+  .headField .filter img{ width: 15px; height: 15px; }
+  .headField .sorter img{ width: 15px; height: 15px; }
+  .action-icon{ width: 15px; height: 15px; }
 
 }

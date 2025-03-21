@@ -38,38 +38,13 @@ class Customers_model extends CI_Model {
     }
 
 
-    #   ritorna tutti i dati in base ai parametri configurati in sessione
+    #   getAnagrafiche
+    #   funzione principale
+    #   per ottenere le anagrafiche
+    #   con la possibilità di filtrare e ordinare
+    #   e gestione della paginazione
 
-    public function get_all( $ipp = 10, $pagina = 0, $campo = 'id', $dir = 1, $filtro = false ) {
-        
-        $verso = "ASC";
-        if( $dir == 2 )
-            $verso = "DESC";
-
-        $query = $this->db
-                    ->order_by($campo, $verso)
-                    ->limit($ipp, $pagina * $ipp)
-                    ->where("soft_deleted = 0");
-
-
-        if( $filtro ){
-
-            $query = $query->like('nome', $filtro);
-            $query = $query->or_like('cognome', $filtro);
-            $query = $query->or_like('email', $filtro);
-            $query = $query->or_like('indirizzo', $filtro);
-        }
-
-
-        $query = $this->db->get($this->table);
-
-
-        return $query->result();
-    }
-
-
-
-    public function getAnagrafiche( $ipp = 10, $pagina = 0, $filtri = false, $ordinamento = false ) {
+    public function getAnagrafiche( $ipp = 10, $pagina = 0, $filtri = false, $ordinamento = [] ) {
         
         #   costruisco la query
 
@@ -87,34 +62,51 @@ class Customers_model extends CI_Model {
 
         }
         
+        
+        
         if( $ordinamento ){
+            
+            #   organizzo la sequenza
+            
+            $sequenza = [];
 
-            foreach( $ordinamento as $k => $v ){
-                
-                switch( $v ){
-                    case 1:
-                        $query = $query->order_by($k, "ASC");
-                        break;
-                    case 2:
-                        $query = $query->order_by($k, "DESC");
-                        break;
+            foreach( $ordinamento as $campo => $valori ){
+
+                if( $valori['seq']){
+
+                    if( $valori['dir'] == 1 )
+                        $valori['dir'] = "ASC";
+                    else
+                        $valori['dir'] = "DESC";
+
+                    $sequenza[ $valori['seq'] ] = ["campo" => $campo, "dir" =>  $valori['dir'] ];
+                    
                 }
+            }
+
+            #   ordino per priorità temporale
+
+            ksort( $sequenza );
+
+            foreach( $sequenza as $ordine ){
+            
+                $query = $query->order_by($ordine['campo'], $ordine['dir'] );
 
             }
 
         }
 
-        $query = $this->db->get($this->table);
+        #   infine lancio la query
 
+        $query = $this->db->get($this->table);
 
         return $query->result();
     }
 
 
-
-
-
-
+    #   get_by_id
+    #   funzione per ottenere un record specifico
+    
     public function get_by_id($id) {
 
         $query = $this->db->get_where($this->table, [
@@ -126,6 +118,9 @@ class Customers_model extends CI_Model {
         return $query->row();
     }
 
+
+    #   Gestione del dato
+    
     public function insert($data) {
         return $this->db->insert($this->table, $data);
     }
@@ -155,42 +150,5 @@ class Customers_model extends CI_Model {
         return array_diff( $fields, $this->campi_da_ignorare );
 
     }
-
-    
-    // generato automaticamente
-    public function fields() {
-        return array(
-            'id' => array(
-                'type' => 'INT',
-                'constraint' => 11,
-                'auto_increment' => TRUE
-            ),
-            'nome' => array(
-                'type' => 'VARCHAR',
-                'constraint' => '100',
-            ),
-            'cognome' => array(
-                'type' => 'VARCHAR',
-                'constraint' => '100',
-            ),
-            'email' => array(
-                'type' => 'VARCHAR',
-                'constraint' => '100',
-            ),
-            'sesso' => array(
-                'type' => 'CHAR',
-                'constraint' => '1',
-            ),
-            'indirizzo' => array(
-                'type' => 'TEXT',
-            ),
-            'soft_deleted' => array(
-                'type' => 'TINYINT',
-                'constraint' => '1',
-                'default' => '0',
-            ),
-        );
-    }
-
 
 }

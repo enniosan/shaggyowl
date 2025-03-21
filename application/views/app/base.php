@@ -39,38 +39,45 @@
     </div>
 
     <div id='modalContainer' class='hiddener'>
+        
+        <div class='modalMask hiddener' id='viewMask'>
+            
+            <div class='titolo'></div>
+            <div class='dati'></div>
+            
+            <div class='service-button closeMask' id='viewCancel'>Chiudi</div>
+        </div>
+        
         <div class='modalMask hiddener' id='editMask'>
             <div id='editTitle'> *** TITOLO ***</div>
                 
             <form id='editForm' action='' method='post'>
             
                 <label for='e_nome'>Nome *</label>
-                <input type='text' id='e_nome' name='nome' placeholder='Nome' required>
+                <input class='formField' type='text' id='e_nome' name='nome' placeholder='Nome' required>
                 
                 <label for='e_cognome'>Cognome *</label>
-                <input type='text' id='e_cognome' name='cognome' placeholder='Cognome' required>
+                <input class='formField' type='text' id='e_cognome' name='cognome' placeholder='Cognome' required>
                 
                 <label for='e_email'>Email*</label>
-                <input type='email' id='e_email' name='email' placeholder='Email' required>
+                <input class='formField' type='email' id='e_email' name='email' placeholder='Email' required>
                 
                 <label for='e_indirizzo'>Indirizzo</label>
-                <input type='text' id='e_indirizzo' name='indirizzo' placeholder='Indirizzo'>
+                <input class='formField' type='text' id='e_indirizzo' name='indirizzo' placeholder='Indirizzo'>
                 
                 <label for='e_sesso'>Sesso</label>
 
-                <select id='e_sesso' name='sesso'>
+                <select class='formField' id='e_sesso' name='sesso'>
                     <option value='' default disabled>Seleziona un'opzione</option>
                     <option value='M'>Maschio</option>
                     <option value='F'>Femmina</option>
                 </select>
 
                 <input type='hidden'    id='e_id' name='id'>
-
-
             </form>
 
             <div id='editActions'>
-                <div class='service-button' id='editCancel'>Chiudi</div>
+                <div class='service-button closeMask' id='editCancel'>Chiudi</div>
                 <div class='action-button' id='editSave' >Salva</div>
             </div>
 
@@ -99,7 +106,6 @@
             </h4>
             
             <div class='title'><?= $title ?>
-        
         </div>
 
             <div class='filler'>
@@ -113,7 +119,9 @@
         
         </div>
 
-        <div id='theTable'>
+        <div id='tableContainer'>
+        
+            <div id='theTable'>
             
             <?php 
 
@@ -127,7 +135,7 @@
                     
                     /*  gestione del sorting */
                     
-                    $current_sort = $this -> session -> userdata()['ordinamento'][$campo];
+                    $current_sort = $this -> session -> userdata()['ordinamento'][$campo]['dir'];
                     
                     $sorting = "<div class='sorter' data-field='".$campo."' data-sort='".$current_sort."'>";
                     
@@ -159,7 +167,6 @@
 
                     }
                     
-                    
                     $filter .= "</div>
                     
                     <dialog class='filterField hiddener' id='filterField_".$campo."'>
@@ -179,15 +186,15 @@
                     ";
 
 
+                    $nomeCampo = "<div>".substr($campo, 0, 3) . "<span class='hiddenXs'>" . substr($campo, 3) . "</span></div>";
 
-                
-                    echo "<div class='headField $extraClass'>$campo $filter $sorting</div>";
-                
+                    echo "  <div class='headField $extraClass'>
+                                $nomeCampo $filter $sorting
+                            </div>";
                 }
             
                 #   azioni
-                echo "<div class='headField'>
-                </div>";
+                echo "<div class='headField'></div>";
 
                 $extraClass = "";
 
@@ -209,11 +216,10 @@
                     
                     echo "<div class='actions commonField row_".$idx." ' data-row='" . $idx . "' >";
 
-                    /*                        
+                    
                     if( $this -> session -> userdata()['actions']->show )
                         echo "<img width=20 height=20 class='action-icon'src='/assets/icons/view.svg' title='edit' name='edit' data-action='view' data-id='" . $anagrafica -> id . "'>";
-                    /** */
-
+                    
                     if( $this -> session -> userdata()['actions']->edit )
                         echo "<img width=20 height=20 class='action-icon'src='/assets/icons/edit.svg' title='edit' name='edit' data-action='edit' data-id='" . $anagrafica -> id . "'>";
                     
@@ -236,6 +242,7 @@
             ?>
         
 
+            </div>
         </div>
 
         <div id='navibar'>
@@ -301,6 +308,7 @@
 
         </div>
     </div>
+
 </body>
 
 </html>

@@ -71,7 +71,10 @@ $route['app']           = 'app/index';          // main root
 $route['app/delete']    = 'app/delete';         // Cancella un utente esistente
 $route['app/update']    = 'app/updateUser';     // Aggiorna un utente esistente
 $route['app/insert']    = 'app/insertUser';     // Insert
-
 $route['app/get/(:id)'] = 'app/getUser/$1';     // Prende i dati per l'utente richiesto
+
+$route['app/debug']     = 'app/debug';          // Insert
+$route['error']         = 'main/error';          // Insert
+
 
 #   rotta per metodo in classe App , metodo updateUser

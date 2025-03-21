@@ -98,7 +98,6 @@ class Main extends CI_Controller {
 				
 				$this->Admins_model->updateLastAccessTime ($admin -> id, $last_access);
 
-
 				#	azioni
 				if( json_decode( $admin->roleattributes, 1 ) ){
 					$admin->roleattributes = json_decode( $admin->roleattributes );
@@ -108,6 +107,7 @@ class Main extends CI_Controller {
 
 					$admin->roleattributes = ["list" => "true"];
 				}
+				
 
 				$this->session->set_userdata('logged_in',	true			);
 				
@@ -158,8 +158,12 @@ class Main extends CI_Controller {
 	}
 
 	public function logout() {
-
 		$this->session->sess_destroy();
 		redirect('/');
 	}	
+
+
+	public function error() {
+		$this->load->view('error');
+	}
 }

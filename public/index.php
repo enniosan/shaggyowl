@@ -61,10 +61,7 @@
 	impostazione dell'error reporting per evitare che ci siano confillti con php8
 */
 
-
-
 require_once( "../functions/generic.php" );
-
 
 define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
 
@@ -99,6 +96,7 @@ switch (ENVIRONMENT)
 #	enniosan
 #	tolgo i deprecati perchè sto su una versione di php non compatibile
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
+
 
 /*
  *---------------------------------------------------------------
