@@ -5,12 +5,11 @@ Demo ShaggyOwl
 Applicazione demo per la gestione di un'anagrafica con filtri e ordinamento basata su codeigniter 3.
 
 
-
 *************
 Live demo
 *************
 
-L'applicazione è visibile all'indirizzo <http://storiedinatale.it/>.
+L'applicazione è visibile all'indirizzo http://storiedinatale.it/
 Chiedo scusa per il nome... ma avevo questo dominio libero e l'ho sfruttato
 
 
@@ -45,3 +44,19 @@ Frontend: html5 / vanilla js
 
 L'applicazione dovrebbe girare senza problemi su qualsiasi server con php 7 o superiore.
 Non ho utilizzato librerie esterne per il frontend, ho scritto tutto in vanilla js per mantenere il codice il più leggero possibile.
+
+
+**************************
+Funzionalità
+**************************
+
+# Ordinamento:
+
+per ordinare i campi basa premere sul tasto - presente di fianco al titolo.
+
+
+
+# Filtro:
+Per filtrare i campi basta cliccare sull'icona filtro presente di fianco al titolo.
+Si aprirà una finestra con un campo testo da utilizzare per filtrare.
+Gli unici caratteri validi sono caratteri alfanumerici minuscoli.

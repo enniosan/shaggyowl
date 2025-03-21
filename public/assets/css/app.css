@@ -260,13 +260,22 @@
   /**/gap: 1px;
 }
 
-
-
-
-
 .sorter{
   cursor: pointer;
-  user-select: none
+  user-select: none;
+  margin-top: 0px;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  
+  height: 20px;
+  gap: 0px;
+  padding: 0px;
+
+}
+
+.sorter img{
+  width: 20px;
+  height: 15px;
 }
 
 

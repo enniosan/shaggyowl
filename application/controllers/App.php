@@ -209,9 +209,9 @@ class App extends CI_Controller {
 		$this->form_validation->set_data( $formData );
 
 		$this->form_validation->set_rules('id', 'Id', 'required|numeric');
-		$this->form_validation->set_rules('nome', 'Nome', 'required|max_length[100]|regex_match[/^([0-9a-z ])+$/i]');
-		$this->form_validation->set_rules('cognome', 'Cognome', 'required|max_length[100]|regex_match[/^([0-9a-z ])+$/i]');
-		$this->form_validation->set_rules('email', 'Email', 'required|max_length[100]|valid_email');
+		$this->form_validation->set_rules('nome', 'Nome', 'required|max_length[100]|regex_match[/^([0-9a-z ])+$/i]' , ["regex_match" => "Il campo %s non può contenere caratteri speciali", "required" => "Il campo %s è obbligatorio"]);
+		$this->form_validation->set_rules('cognome', 'Cognome', 'required|max_length[100]|regex_match[/^([0-9a-z ])+$/i]', ["regex_match" => "Il campo %s non può contenere caratteri speciali", "required" => "Il campo %s è obbligatorio"]);
+		$this->form_validation->set_rules('email', 'Email', 'required|max_length[100]|valid_email', ["required" => "Il campo %s è obbligatorio", "valid_email" => "Il campo %s non è valido"]);
 		$this->form_validation->set_rules('indirizzo', 'Indirizzo', 'max_length[200]');
 		$this->form_validation->set_rules('sesso', 'Sesso', "required|max_length[1]|alpha");
 
@@ -279,9 +279,9 @@ class App extends CI_Controller {
 		
 		$this->form_validation->set_data( $formData );
 
-		$this->form_validation->set_rules('nome', 'Nome', 'required|max_length[100]|regex_match[/^([a-z0-9 ])+$/i]');
-		$this->form_validation->set_rules('cognome', 'Cognome', 'required|max_length[100]|regex_match[/^([a-z0-9 ])+$/i]');
-		$this->form_validation->set_rules('email', 'Email', 'required|max_length[100]|valid_email');
+		$this->form_validation->set_rules('nome', 'Nome', 'required|max_length[100]|regex_match[/^([a-z0-9 ])+$/i]', ["regex_match" => "Il campo %s non può contenere caratteri speciali", "required" => "Il campo %s è obbligatorio"]);	
+		$this->form_validation->set_rules('cognome', 'Cognome', 'required|max_length[100]|regex_match[/^([a-z0-9 ])+$/i]', ["regex_match" => "Il campo %s non può contenere caratteri speciali", "required" => "Il campo %s è obbligatorio"]);
+		$this->form_validation->set_rules('email', 'Email', 'required|max_length[100]|valid_email', ["required" => "Il campo %s è obbligatorio", "valid_email" => "Il campo %s non è valido"]);
 		$this->form_validation->set_rules('indirizzo', 'Indirizzo', 'max_length[200]');
 		$this->form_validation->set_rules('sesso', 'Sesso', "required|max_length[1]|alpha");
 
@@ -422,13 +422,22 @@ class App extends CI_Controller {
 
 		if( isset( $input['f'] ) && isset( $input['t'] ) ){
 
-			$filtri = $this -> session -> userdata("filtri");
+			#	il filtro deve essere obbligatoriamente composto da lettere e numeri
+			#	non deve contenere caratteri speciali
 
-			if( isset( $filtri[$input['f']] ) ){
+			#	controllo con regex
+			#	/^[a-zA-Z0-9]+$/
 
-				$filtri[$input['f']] = $input['t'];
-				
-				$this -> session -> set_userdata("filtri", $filtri);
+			if( preg_match("/^[a-z0-9 ]+$/", $input['t']) ){
+
+				$filtri = $this -> session -> userdata("filtri");
+
+				if( isset( $filtri[$input['f']] ) ){
+
+					$filtri[$input['f']] = $input['t'];
+					
+					$this -> session -> set_userdata("filtri", $filtri);
+				}
 			}
 		}
 

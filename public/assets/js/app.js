@@ -11,13 +11,14 @@ document.querySelector('#logout').addEventListener('click', function () {
     }
 });
 
+
 /*  tasti per ordinare i campi */
-document.querySelectorAll('.sorter').forEach( (item) => { 
+document.querySelectorAll('.sorter-icon').forEach( (item) => { 
 
     item.addEventListener( "click" , (e) => {
-        sort = ( item.dataset.sort + 1 ) % 3;
-
-        document.location.href="/app?o=" + item.dataset.field + "&v=" + sort;
+        
+        document.location.href="/app?o=" + item.dataset.field + "&v=" + item.dataset.sort;
+    
     })
 
 } );

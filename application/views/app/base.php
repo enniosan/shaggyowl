@@ -136,7 +136,10 @@
                     /*  gestione del sorting */
                     
                     $current_sort = $this -> session -> userdata()['ordinamento'][$campo]['dir'];
-                    
+                    /*
+
+
+
                     $sorting = "<div class='sorter' data-field='".$campo."' data-sort='".$current_sort."'>";
                     
                     switch( $current_sort ){
@@ -152,8 +155,44 @@
                     }
                             
                     $sorting .= "</div>";
+                      */
+                    
+
+                    $sorting = "<div class='sorter' data-field='".$campo."' data-sort='".$current_sort."'>";
                     
                     
+                    $up = ( $current_sort == 1 ) ? ["icon" => "asc.svg", "dir" => 0 ] :  ["icon" => "asc_off.svg", "dir" => 1 ];
+                    $dw = ( $current_sort == 2 ) ? ["icon" => "desc.svg", "dir" => 0 ] : ["icon" => "desc_off.svg", "dir" => 2 ];
+
+                    $sorting .= "
+                    <img 
+                        src='/assets/icons/${up['icon']}' 
+                        alt='asc' 
+                        title='asc' 
+                        loading=lazy 
+                        width=20 
+                        height=15 
+                        class=' sorter-icon '  data-field='".$campo."' data-sort='${up['dir']}'
+                    >
+                    
+                    <img 
+                        src='/assets/icons/${dw['icon']}' 
+                        alt='desc' 
+                        title='desc' 
+                        loading=lazy 
+                        width=20 
+                        height=15 
+                        class=' sorter-icon '  data-field='".$campo."' data-sort='${dw['dir']}'
+                    >";
+                    
+                    $sorting .= "</div>";
+
+
+
+
+
+
+
                     /*  gestione del filtro */
                             
                     $current_filter = $this -> session -> userdata()['filtri'][$campo];
