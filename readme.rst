@@ -17,7 +17,7 @@ Chiedo scusa per il nome... ma avevo questo dominio libero e l'ho sfruttato
 Accessi
 *******************
 
-Ci sono quattro diversi tipi di ruolo, ognuno con permessi diversi:
+Ci sono tre diversi tipi di ruolo, ognuno con permessi diversi:
 
 Amministratori ( hanno accesso a tutte le funzionalità )
 fabrizio : q1w2e3r4
