@@ -1,82 +1,47 @@
 ###################
-What is CodeIgniter
+Demo ShaggyOwl
 ###################
 
-CodeIgniter is an Application Development Framework - a toolkit - for people
-who build web sites using PHP. Its goal is to enable you to develop projects
-much faster than you could if you were writing code from scratch, by providing
-a rich set of libraries for commonly needed tasks, as well as a simple
-interface and logical structure to access these libraries. CodeIgniter lets
-you creatively focus on your project by minimizing the amount of code needed
-for a given task.
+Applicazione demo per la gestione di un'anagrafica con filtri e ordinamento basata su codeigniter 3.
+
+
 
 *************
-CodeIgniter 3
+Live demo
 *************
 
-This repository is for the legacy version, CodeIgniter 3.
-`CodeIgniter 4 <https://github.com/codeigniter4/CodeIgniter4>`_ is the latest
-version of the framework.
+L'applicazione è visibile all'indirizzo <http://storiedinatale.it/>.
+Chiedo scusa per il nome... ma avevo questo dominio libero e l'ho sfruttato
 
-CodeIgniter 3 is the legacy version of the framework, intended for use with PHP
-5.6+. This version is in maintenance, receiving mostly just security updates.
 
 *******************
-Release Information
+Accessi
 *******************
 
-This repo contains in-development code for future releases. To download the
-latest stable release please visit the `CodeIgniter Downloads
-<https://codeigniter.com/download>`_ page.
+Ci sono quattro diversi tipi di ruolo, ognuno con permessi diversi:
+
+Amministratori ( hanno accesso a tutte le funzionalità )
+fabrizio : q1w2e3r4
+giuseppe: q1w2e3r4 
+
+Operatori ( hanno accesso solo alla visualizzazione e alla modifica dei dati )
+ennio : q1w2e3r4
+
+Osservatori ( hanno accesso solo alla visualizzazione dei dati )
+tester : tester
+
 
 **************************
-Changelog and New Features
+Features
 **************************
 
-You can find a list of all changes for each release in the `user
-guide change log <https://github.com/bcit-ci/CodeIgniter/blob/develop/user_guide_src/source/changelog.rst>`_.
+Cercando di rimanere fedele alla traccia fornita ho cercato di realizzare un'applicazione completa sia dal punto di vista funzionale che dal punto di vista dell'usabilità.
 
-*******************
-Server Requirements
-*******************
+Stack:
+Ubuntu 18.04 / Nginx / PHP 8.3 / MariaDB 10.11.8
 
-PHP version 5.6 or newer is recommended.
+Backend: Codeigniter 3
+Frontend: html5 / vanilla js
 
-It should work on 5.4.8 as well, but we strongly advise you NOT to run
-such old versions of PHP, because of potential security and performance
-issues, as well as missing features.
-
-************
-Installation
-************
-
-Please see the `installation section <https://codeigniter.com/userguide3/installation/index.html>`_
-of the CodeIgniter User Guide.
-
-*******
-License
-*******
-
-Please see the `license
-agreement <https://github.com/bcit-ci/CodeIgniter/blob/develop/user_guide_src/source/license.rst>`_.
-
-*********
-Resources
-*********
-
--  `User Guide <https://codeigniter.com/userguide3/>`_
--  `Contributing Guide <https://github.com/bcit-ci/CodeIgniter/blob/develop/contributing.md>`_
--  `Language File Translations <https://github.com/bcit-ci/codeigniter3-translations>`_
--  `Community Forums <https://forum.codeigniter.com/>`_
--  `Community Wiki <https://github.com/bcit-ci/CodeIgniter/wiki>`_
--  `Community Slack Channel <https://codeigniterchat.slack.com>`_
-
-Report security issues to our `Security Panel <mailto:security@codeigniter.com>`_
-or via our `page on HackerOne <https://hackerone.com/codeigniter>`_, thank you.
-
-***************
-Acknowledgement
-***************
-
-The CodeIgniter team would like to thank EllisLab, all the
-contributors to the CodeIgniter project and you, the CodeIgniter user.
+L'applicazione dovrebbe girare senza problemi su qualsiasi server con php 7 o superiore.
+Non ho utilizzato librerie esterne per il frontend, ho scritto tutto in vanilla js per mantenere il codice il più leggero possibile.
