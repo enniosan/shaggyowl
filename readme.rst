@@ -17,17 +17,14 @@ Chiedo scusa per il nome... ma avevo questo dominio libero e l'ho sfruttato
 Accessi
 *******************
 
-Ci sono tre diversi tipi di ruolo, ognuno con permessi diversi:
+Ci sono due diversi tipi di ruolo, ognuno con permessi diversi:
 
 Amministratori ( hanno accesso a tutte le funzionalità )
 fabrizio : q1w2e3r4
 giuseppe: q1w2e3r4 
 
-Operatori ( hanno accesso solo alla visualizzazione e alla modifica dei dati )
+Operatori ( non hanno diritto a cancellare )
 ennio : q1w2e3r4
-
-Osservatori ( hanno accesso solo alla visualizzazione dei dati )
-tester : tester
 
 
 **************************
