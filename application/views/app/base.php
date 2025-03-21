@@ -136,30 +136,11 @@
                     /*  gestione del sorting */
                     
                     $current_sort = $this -> session -> userdata()['ordinamento'][$campo]['dir'];
-                    /*
-
-
-
+                    
+                    
+                    
+                    #   sorting v2 
                     $sorting = "<div class='sorter' data-field='".$campo."' data-sort='".$current_sort."'>";
-                    
-                    switch( $current_sort ){
-                        case 1:
-                            $sorting .= "<img src='/assets/icons/asc.svg' alt='asc' title='asc' loading=lazy width=20 height=20>";
-                            break;
-                        case 2:
-                            $sorting .= "<img src='/assets/icons/desc.svg' alt='desc' title='desc' loading=lazy width=20 height=20>";
-                            break;
-                            default:
-                            $sorting .= "<img src='/assets/icons/neutro.svg' alt='neutro' title='neutro' loading=lazy width=20 height=20>";
-                            break;
-                    }
-                            
-                    $sorting .= "</div>";
-                      */
-                    
-
-                    $sorting = "<div class='sorter' data-field='".$campo."' data-sort='".$current_sort."'>";
-                    
                     
                     $up = ( $current_sort == 1 ) ? ["icon" => "asc.svg", "dir" => 0 ] :  ["icon" => "asc_off.svg", "dir" => 1 ];
                     $dw = ( $current_sort == 2 ) ? ["icon" => "desc.svg", "dir" => 0 ] : ["icon" => "desc_off.svg", "dir" => 2 ];
@@ -186,12 +167,6 @@
                     >";
                     
                     $sorting .= "</div>";
-
-
-
-
-
-
 
                     /*  gestione del filtro */
                             
