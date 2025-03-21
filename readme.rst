@@ -34,7 +34,7 @@ Features
 Cercando di rimanere fedele alla traccia fornita ho cercato di realizzare un'applicazione completa sia dal punto di vista funzionale che dal punto di vista dell'usabilità.
 
 Stack:
-Ubuntu 18.04 / Nginx / PHP 8.3 / MariaDB 10.11.8
+Ubuntu 20.04 / Nginx / PHP 8.3 / MariaDB 10.11.8
 
 Backend: Codeigniter 3
 Frontend: html5 / vanilla js
